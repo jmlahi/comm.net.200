@@ -51,6 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# .vscode folder excluding launch.json
+# .vscode folder excluding tasks.json
 .vscode/*.*
-!.vscode/launch.json
+!.vscode/tasks.json
