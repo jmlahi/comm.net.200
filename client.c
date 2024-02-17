@@ -20,7 +20,8 @@ int main() {
 
     //Määritellään myöhemmin tarvittavia muuttujia ja tietorakenteita
     WSADATA wsaData;
-    SOCKET serverSocket;
+    
+    SOCKET tcpSocket;
     struct sockaddr_in serverAddr;
     int serverAddrLen = sizeof(serverAddr);
     char buffer[BUFFER_SIZE];
@@ -29,7 +30,7 @@ int main() {
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
     // Luodaan TCP-soketti, parametrit AF_INET = TCP/IPv4. SOCK_STREAM = TCP
-    serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    tcpSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     // Määritellään serverin osoiterakenne: IPv4, TCP-portti, IP-osoite (=loopback-osoite)
     serverAddr.sin_family = AF_INET;
@@ -38,7 +39,7 @@ int main() {
 
     // Yhdistetään serveriin
     printf("Connecting server @%s\n", inet_ntoa(serverAddr.sin_addr));
-    connect(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+    connect(tcpSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     printf("Server connected, TCP-port %d\n", PORT_TCP);
 
     // Luodaan UDP-soketti ja siihen liittyvät tietueet
@@ -61,7 +62,7 @@ int main() {
 
     // Suljetaan soketit
     closesocket(udpSocket);
-    closesocket(serverSocket);
+    closesocket(tcpSocket);
     WSACleanup();
 
     return 0;
