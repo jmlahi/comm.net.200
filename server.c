@@ -36,7 +36,7 @@ int main() {
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(PORT_TCP);
 
-    // Bind TCP socket
+    // Sidotaan TCP-soketti
     bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
 
     // Kuunnellaan TCP-yhteydenottoja
