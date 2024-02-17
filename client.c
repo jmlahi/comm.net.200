@@ -18,21 +18,19 @@ Opiskelijanumero: K426690
 
 int main() {
 
-    //Määritellään myöhemmin tarvittavia muuttujia ja tietorakenteita
+    // Alustetaan ja käynnistetään Winsock-kirjasto
     WSADATA wsaData;
-    
-    SOCKET tcpSocket;
-    struct sockaddr_in serverAddr;
-    int serverAddrLen = sizeof(serverAddr);
-    char buffer[BUFFER_SIZE];
-
-    // Alustetaan Winsock-kirjasto
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
+    //Määritellään lähetys/vastaanotto puskuri
+    char buffer[BUFFER_SIZE];
+
     // Luodaan TCP-soketti, parametrit AF_INET = TCP/IPv4. SOCK_STREAM = TCP
-    tcpSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    SOCKET tcpSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     // Määritellään serverin osoiterakenne: IPv4, TCP-portti, IP-osoite (=loopback-osoite)
+    struct sockaddr_in serverAddr;
+    int serverAddrLen = sizeof(serverAddr);
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(PORT_TCP);
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -42,8 +40,10 @@ int main() {
     connect(tcpSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     printf("Server connected, TCP-port %d\n", PORT_TCP);
 
-    // Luodaan UDP-soketti ja siihen liittyvät tietueet
+    // Luodaan UDP-soketti
     SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    //Luodaan UDP-sokettiin liittyvät tietueet
     struct sockaddr_in udpServerAddr, udpClientAddr;
     int udpClientAddrLen = sizeof(udpClientAddr);
     udpServerAddr.sin_family = AF_INET;

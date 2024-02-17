@@ -1,6 +1,6 @@
 /*
 COMP.CS.100
-Harjoitustehtävä 5: Palvelin
+Harjoitustehtävä 5: palvelin
 Tekijä: Juha Latva-Hirvelä
 Opiskelijanumero: K426690
 */
@@ -18,20 +18,19 @@ Opiskelijanumero: K426690
 
 int main() {
 
-    //Määritellään myöhemmin tarvittavia muuttujia ja tietorakenteita
-    WSADATA wsaData;
-    SOCKET serverSocket, clientSocket;
-    struct sockaddr_in serverAddr, clientAddr;
-    int clientAddrLen = sizeof(clientAddr);
+    //Määritellään lähetyspuskuri ja sen sisältö = serverin lähettämä sanoma
+
     char udpBuffer[BUFFER_SIZE] = "This is a datagram from the darkest corner of the cave!";
 
-    // Alustetaan Winsock-kirjasto
+    // Alustetaan ja käynnistetään Winsock-kirjasto
+    WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
-
+    
     // Luodaan TCP-soketti: parametrit AF_INET = TCP/IPv4. SOCK_STREAM = TCP
-    serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     // Määritellään serverin osoiterakenne: IPv4, IP-osoite (laitteen mikä tahansa verkkoliittymä), TCP-portti (vakio)
+    struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(PORT_TCP);
@@ -41,21 +40,19 @@ int main() {
 
     // Kuunnellaan TCP-yhteydenottoja
     listen(serverSocket, 1);
-
     printf("Server is listening TCP-port %d\n", PORT_TCP);
 
     // Hyväksytään TCP-yhteys
-    clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
-
+    struct sockaddr_in clientAddr;
+    int clientAddrLen = sizeof(clientAddr);
+    SOCKET clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
     printf("Client connected @%s\n", inet_ntoa(clientAddr.sin_addr));
 
     // Luodaan UDP-soketti
     SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    struct sockaddr_in udpServerAddr;
-
-
+    
     // Määritellään UDP-soketin osoiterakenne
-
+    struct sockaddr_in udpServerAddr;
     udpServerAddr.sin_family = AF_INET;
     udpServerAddr.sin_port = htons(PORT_UDP);
     udpServerAddr.sin_addr.s_addr = clientAddr.sin_addr.s_addr;
