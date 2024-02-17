@@ -1,3 +1,11 @@
+/*
+COMP.CS.100
+Harjoitustehtävä 5: asiakas
+Tekijä: Juha Latva-Hirvelä
+Opiskelijanumero: K426690
+*/
+
+
 #include <stdio.h>
 
 //Sisällytetään Windows Socket API-otsikkotiedosto
@@ -29,9 +37,9 @@ int main() {
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     // Yhdistetään serveriin
-    printf("Connecting server... \n");
+    printf("Connecting server @%s\n", inet_ntoa(serverAddr.sin_addr));
     connect(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    printf("TCP connected! Listening UDP-port %d\n", PORT_UDP);
+    printf("Server connected, TCP-port %d\n", PORT_TCP);
 
     // Luodaan UDP-soketti ja siihen liittyvät tietueet
     SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -44,6 +52,7 @@ int main() {
     // Sidotaan UDP-soketti palvelimen osoitteeseen
     bind(udpSocket, (struct sockaddr *)&udpServerAddr, sizeof(udpServerAddr));
 
+    printf("Ready to receive data, UDP-port %d\n", PORT_UDP);
 
     // Vastaanotetaan tietoa UDP-yhteydellä
     recvfrom(udpSocket, buffer, BUFFER_SIZE, 0, (struct sockaddr *)&udpClientAddr, &udpClientAddrLen);

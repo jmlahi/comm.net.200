@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# .vscode folder excluding launch.json
+.vscode/*.*
+!.vscode/launch.json

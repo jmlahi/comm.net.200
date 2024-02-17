@@ -1,3 +1,11 @@
+/*
+COMP.CS.100
+Harjoitustehtävä 5: Palvelin
+Tekijä: Juha Latva-Hirvelä
+Opiskelijanumero: K426690
+*/
+
+
 #include <stdio.h>
 
 //Sisällytetään Windows Socket API-otsikkotiedosto
@@ -9,6 +17,7 @@
 #define BUFFER_SIZE 1000
 
 int main() {
+
     //Määritellään myöhemmin tarvittavia muuttujia ja tietorakenteita
     WSADATA wsaData;
     SOCKET serverSocket, clientSocket;
@@ -19,10 +28,10 @@ int main() {
     // Alustetaan Winsock-kirjasto
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-    // Luodaan TCP-soketti, parametrit AF_INET = TCP/IPv4. SOCK_STREAM = TCP
+    // Luodaan TCP-soketti: parametrit AF_INET = TCP/IPv4. SOCK_STREAM = TCP
     serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-    // Määritellään serverin osoiterakenne: IPv4, TCP-portti, IP-osoite (mikä tahansa)
+    // Määritellään serverin osoiterakenne: IPv4, IP-osoite (laitteen mikä tahansa verkkoliittymä), TCP-portti (vakio)
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serverAddr.sin_port = htons(PORT_TCP);
@@ -30,28 +39,33 @@ int main() {
     // Bind TCP socket
     bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
 
-    // Listen for incoming TCP connections
+    // Kuunnellaan TCP-yhteydenottoja
     listen(serverSocket, 1);
 
     printf("Server is listening TCP-port %d\n", PORT_TCP);
 
-    // Accept incoming TCP connection
+    // Hyväksytään TCP-yhteys
     clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
 
-    printf("TCP connected. Sending UDP-datagram to the client...\n");
+    printf("Client connected @%s\n", inet_ntoa(clientAddr.sin_addr));
 
-    // Send data to client using UDP
+    // Luodaan UDP-soketti
     SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     struct sockaddr_in udpServerAddr;
+
+
+    // Määritellään UDP-soketin osoiterakenne
+
     udpServerAddr.sin_family = AF_INET;
     udpServerAddr.sin_port = htons(PORT_UDP);
     udpServerAddr.sin_addr.s_addr = clientAddr.sin_addr.s_addr;
 
+    // Lähetetään viesti UDP-protokollalla
+    printf("Sending secret UDP-datagram to the client...\n");
     sendto(udpSocket, udpBuffer, strlen(udpBuffer), 0, (struct sockaddr *)&udpServerAddr, sizeof(udpServerAddr));
-
     printf("UDP-datagram sent.\n");
 
-    // Close sockets
+    // Suljetaan soketit
     closesocket(udpSocket);
     closesocket(clientSocket);
     closesocket(serverSocket);
