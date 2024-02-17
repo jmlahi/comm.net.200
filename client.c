@@ -16,7 +16,7 @@ Opiskelijanumero: K426690
 #define PORT_UDP 24324
 #define BUFFER_SIZE 1000
 
-int main() {
+int main(void) {
 
     // Alustetaan ja käynnistetään Winsock-kirjasto
     WSADATA wsaData;
@@ -26,7 +26,7 @@ int main() {
     char buffer[BUFFER_SIZE];
 
     // Luodaan TCP-soketti, parametrit AF_INET = TCP/IPv4. SOCK_STREAM = TCP
-    SOCKET tcpSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    SOCKET tcpSocket = socket(AF_INET, SOCK_STREAM, 0);
 
     // Määritellään serverin osoiterakenne: IPv4, TCP-portti, IP-osoite (=loopback-osoite)
     struct sockaddr_in serverAddr;
@@ -41,7 +41,7 @@ int main() {
     printf("Server connected, TCP-port %d\n", PORT_TCP);
 
     // Luodaan UDP-soketti
-    SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, 0);
 
     //Luodaan UDP-sokettiin liittyvät tietueet
     struct sockaddr_in udpServerAddr, udpClientAddr;
@@ -57,7 +57,6 @@ int main() {
 
     // Vastaanotetaan tietoa UDP-yhteydellä
     recvfrom(udpSocket, buffer, BUFFER_SIZE, 0, (struct sockaddr *)&udpClientAddr, &udpClientAddrLen);
-
     printf("Received UDP datagram from server: %s\n", buffer);
 
     // Suljetaan soketit

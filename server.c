@@ -16,7 +16,7 @@ Opiskelijanumero: K426690
 #define PORT_UDP 24324
 #define BUFFER_SIZE 1000
 
-int main() {
+int main(void) {
 
     //Määritellään lähetyspuskuri ja sen sisältö = serverin lähettämä sanoma
 
