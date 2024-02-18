@@ -5,7 +5,6 @@ Tekijä: Juha Latva-Hirvelä
 Opiskelijanumero: K426690
 */
 
-
 #include <stdio.h>
 
 //Sisällytetään Windows Socket API-otsikkotiedosto
